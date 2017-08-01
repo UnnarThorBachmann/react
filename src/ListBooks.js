@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 
+
 function ListBooks(props) {
-		console.log('props',props);
+		
 		return (
 			<div className="bookshelf">
             	<h2 className="bookshelf-title">{props.title}</h2>
@@ -11,7 +12,7 @@ function ListBooks(props) {
                  		<li key={book.id}>
                         <div className="book">
                           <div className="book-top">
-                            <div className="book-cover" style={{ width: book.width, height: book.height, backgroundImage: book.image }}></div>
+                            <div className="book-cover" style={{width: '100%', height: '100%', backgroundImage: `url(${book.imageLinks.smallThumbnail})`}}></div>
                             <div className="book-shelf-changer">
                               <select>
                                 <option value="none" disabled>Move to...</option>
@@ -23,7 +24,7 @@ function ListBooks(props) {
                             </div>
                           </div>
                           <div className="book-title">{book.title}</div>
-                          <div className="book-authors">{book.author}</div>
+                          <div className="book-authors">{book.authors}</div>
                         </div>
                       </li>
                  	))}

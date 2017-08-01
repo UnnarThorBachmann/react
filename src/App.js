@@ -2,6 +2,8 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks.js'
+import * as booksAPI from '../src/BooksAPI';
+
 class BooksApp extends React.Component {
   state = {
     /**
@@ -10,11 +12,10 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: true
-  }
-  
-  
-  books = [{
+    showSearchPage: true,
+    books: []
+    /*
+    [{
   			'id': 0,
   			'title': 'To Kill a Mockingbird', 
   			'author': 'Harper Lee',
@@ -77,7 +78,17 @@ class BooksApp extends React.Component {
   			'height': 192,
   			'status': 'read'
   		   }
-  ];
+  	]*/
+  }
+
+  componentDidMount() {
+  	booksAPI.getAll().then((books)=> {
+  		this.setState({books})
+  	})
+  }
+  
+  
+  
   render() {
     return (
       <div className="app">
@@ -109,9 +120,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <ListBooks title={'Currently Reading'} books={this.books.filter((book)=> book.status === 'reading')}/>
-                <ListBooks title={'Want to Read'} books={this.books.filter((book)=> book.status === 'want')}/>
-                <ListBooks title={'Read'} books={this.books.filter((book)=> book.status === 'read')}/>
+                <ListBooks title={'Currently Reading'} books={this.state.books.filter((book)=> book.shelf === 'currentlyReading')}/>
+                <ListBooks title={'Want to Read'} books={this.state.books.filter((book)=> book.shelf === 'wantToRead')}/>
+                <ListBooks title={'Read'} books={this.state.books.filter((book)=> book.shelf === 'read')}/>
               </div>
             </div>
             <div className="open-search">
