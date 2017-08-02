@@ -46,6 +46,7 @@ class BooksApp extends React.Component {
   	this.setState({query: query.trim()})
   }
   render() {
+  	console.log(this.state.books);
     return (
       <div className="app">
         {this.state.showSearchPage ? (

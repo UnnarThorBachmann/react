@@ -13,7 +13,7 @@ function ListBooks(props) {
                  		<li key={book.id}>
                         <div className="book">
                           <div className="book-top">
-                            <div className="book-cover" style={{width: '100%', height: '100%', backgroundImage: `url(${book.imageLinks.smallThumbnail})`}}></div>
+                            <div className="book-cover" style={{width: '100%', height: '100%', backgroundImage: `url(${book.imageLinks.thumbnail})`}}></div>
                             <div className="book-shelf-changer">
                               <select onChange={(event)=> {props.changeShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
                                 <option value="none" disabled>Move to...</option>

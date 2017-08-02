@@ -172,3 +172,32 @@ body, .app {
   text-align: center;
   font-size: 0.8em;
 }
+
+/* Added by Unnar Thor Bachmann */
+.search-list {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+div.search-list-main {
+  padding: 0%;
+  width: 80%;
+}
+.search-list-main h4 {
+  margin: 0%;
+  padding-left: 2%;
+  
+}
+
+.search-list-main p {
+  margin: 0%;
+  padding-left: 2%;
+  
+}
+
+.search-list-thumb {
+  min-height: 200px;
+  background-repeat: no-repeat;
+}
