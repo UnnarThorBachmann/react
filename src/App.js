@@ -15,7 +15,7 @@ class BooksApp extends React.Component {
      */
     showSearchPage: true,
     books: [],
-    query: ''
+    
     
   }
 
@@ -42,28 +42,16 @@ class BooksApp extends React.Component {
 
   	booksAPI.update(this.state.books.filter(b=> b.id === id),shelf);
   }
-  updateQuery = (query) => {
-  	this.setState({query: query.trim()})
-  }
+  
   render() {
   	console.log(this.state.books);
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-   
-                <input type="text" 
-                		placeholder='Search by title or author'
-                		value={this.state.query}
-                		onChange={(event)=> this.updateQuery(event.target.value)}
-                />	
-              </div>
-            </div>
+         
+            
             <ListSearch books={this.state.books} changeShelf={this.changeShelf}/>
-          </div>
+         
         ) : (
           <div className="list-books">
             <div className="list-books-title">
