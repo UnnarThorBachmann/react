@@ -179,16 +179,29 @@ body, .app {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
+  border: 1px;
+  border-style: solid;
+  margin: 1px;
 }
 div.search-list-main {
   padding: 0%;
-  width: 80%;
+  width: 70%;
 }
 .search-list-main h4 {
   margin: 0%;
   padding-left: 2%;
   
+}
+
+.search-list-main h4 {
+  margin: 0%;
+  padding-left: 2%;
+  
+}
+
+h6 {
+  margin: 5%;
+
 }
 
 .search-list-main p {

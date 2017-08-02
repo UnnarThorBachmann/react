@@ -9,14 +9,20 @@ function ListSearch(props) {
           <ol className="books-grid">
             {props.books.map((book)=> (
               <li key={book.id} className="search-list">
-                <div style={{width: '10%', height: '100%', backgroundImage: `url(${book.imageLinks.thumbnail})`}} className="search-list-thumb">
+                <div style={{width: '10%', height: '100%', backgroundImage: `url(${book.imageLinks.thumbnail})`}} className="search-list-right">
 
                 </div>
                 <div className="search-list-main">
                   <h4>{book.title}</h4>
                   <p>{book.description.substring(0,700)}{book.description.length > 700? ' ...' : ''}</p>
                 </div>
-                <div style={{width: '10%'}}>
+                <div style={{width: '15%'}} className="right-panel">
+                  <h6>Author(s): {book.authors ? book.authors.join(', '): 'unknown'}</h6>
+                  <h6>Average Rating: {book.averageRating}</h6>
+                  <h6>Categories: {book.categories ? book.categories.join(', '): 'unknown'}</h6>
+                  <h6>Page count: {book.pageCount ? book.pageCount: 'unknown'}</h6>
+                  <h6>Published date: {book.publishedDate ? book.publishedDate: 'unknown'}</h6>
+                  <h6>Shelf status:</h6>
                   <select onChange={(event)=> {props.changeShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
                     <option value="none" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
