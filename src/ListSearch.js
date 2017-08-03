@@ -1,6 +1,9 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+import escapeRegExp from 'escape-string-regexp'
 
 class ListSearch extends React.Component  {
+
   state = {
     query: ''
   }
@@ -8,7 +11,18 @@ class ListSearch extends React.Component  {
 	updateQuery = (query) => {
     this.setState({query: query.trim()})
    }
-	 render()	{return (
+	 render()	{
+    let showingBooks
+    if (this.state.query) { 
+        const match = new RegExp(escapeRegExp(this.state.query),'i')
+        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors[0])))
+    } 
+    else {
+      showingBooks = this.props.books
+    }
+
+    return (
+      
        <div className="search-books">
 		    <div className="search-books-bar">
               <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
@@ -23,7 +37,7 @@ class ListSearch extends React.Component  {
             </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {this.props.books.map((book)=> (
+            {showingBooks.map((book)=> (
               <li key={book.id} className="search-list">
                 <div style={{width: '10%', height: '100%', backgroundImage: `url(${book.imageLinks.thumbnail})`}} className="search-list-right">
 
