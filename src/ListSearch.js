@@ -1,8 +1,13 @@
 import React, {Component} from 'react'
-//import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import {Link} from 'react-router-dom'
+/**
+* This component was constructed by Unnar Thor Bachmann.
+* Some of the code is under heavy influence from the video
+* lectures.
+* This component renders the search list.
+**/
 class ListSearch extends React.Component  {
 
   state = {
@@ -10,21 +15,37 @@ class ListSearch extends React.Component  {
     orderBy:'title',
     filter:''
   }
-	
+
+	/**
+  * @description A function to update the query string.
+  * @param {string} query - The state variablee being updated.
+  * @returns None
+  **/
 	updateQuery = (query) => {
     this.setState({query: query.trim()})
-   }
-	 render()	{
+  }
+
+	render()	{
+    /**
+    * A pattern from the lecture videos.
+    **/
     let showingBooks
 
     if (this.state.query) { 
-        const match = new RegExp(escapeRegExp(this.state.query),'i')
-        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors.join())))
+        const match = new RegExp(escapeRegExp(this.state.query),'i');
+        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors.join())));
     } 
     else {
-      showingBooks = this.props.books
+      showingBooks = this.props.books;
     }
+    /**
+    * Pattern from videos ends.
+    **/
 
+
+    /**
+    * Sorting the search list.
+    **/
     if (this.state.orderBy === 'date')
       showingBooks.sort(sortBy('-publishedDate'))
     else if (this.state.orderBy === 'rating')
@@ -53,6 +74,10 @@ class ListSearch extends React.Component  {
     else
       showingBooks.sort(sortBy('title'))
     
+
+    /**
+    * Filtering with selection.
+    **/
     if (this.state.filter !=='' && ['Business', 'Computers','Economics','Fiction', 'Performing Arts'].includes(this.state.filter)) {
       showingBooks = showingBooks.filter((book) => (
         book.categories && (book.categories.join(' ').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1)
@@ -64,23 +89,22 @@ class ListSearch extends React.Component  {
       showingBooks = showingBooks.filter((book) => (book.shelf === this.state.filter))
     }
     
-    
-    
     return (
       
       <div className="search-books">
 		    <div className="search-books-bar">
           <Link 
             className="close-search"
-            to="/"
-          >Close</Link>
-            <div className="search-books-input-wrapper">
-              <input type="text" 
-                placeholder='Search by title or author'
-                value={this.state.query}
-                onChange={(event)=> this.updateQuery(event.target.value)}
-              />  
-            </div>
+            to="/">
+            Close
+          </Link>
+          <div className="search-books-input-wrapper">
+            <input type="text" 
+              placeholder='Search by title or author'
+              value={this.state.query}
+              onChange={(event)=> this.updateQuery(event.target.value)}
+            />  
+          </div>
         </div>
         <div className="search-books-results">
           <div className="filter-sort">
@@ -141,7 +165,8 @@ class ListSearch extends React.Component  {
           </ol>
         </div>  	
       </div>      	
-		)}
+		)
+  }
 }
 
 export default ListSearch
