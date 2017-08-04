@@ -183,16 +183,11 @@ body, .app {
   border-style: solid;
   margin: 1px;
 }
+
 div.search-list-main {
   padding: 0%;
   width: 70%;
 }
-.search-list-main h4 {
-  margin: 0%;
-  padding-left: 2%;
-  
-}
-
 .search-list-main h4 {
   margin: 0%;
   padding-left: 2%;
@@ -210,7 +205,18 @@ h6 {
   
 }
 
-.search-list-thumb {
-  min-height: 200px;
+div.search-list-thumb {
+  
   background-repeat: no-repeat;
+}
+
+.filter-sort {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  border: 1px;
+  border-style: solid;
+  margin-left: 5%; 
+  margin-right: 5%;
+  justify-content: space-around;
 }
