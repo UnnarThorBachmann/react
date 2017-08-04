@@ -32,17 +32,18 @@ class BooksApp extends React.Component {
   	this.setState((state)=> {
   		state.books.map(b => {
   			if (b.id === id) {
-  				b.shelf = shelf;
-  				return b;
+  				b.shelf = shelf
+  				return b
   			}
   			else {	
-  				return b;
+  				return b
   			}
   		})
   	});
 
-
-  	booksAPI.update(this.state.books.filter(b=> b.id === id),shelf);
+  	console.log(shelf)
+  	console.log(this.state.books.filter(b=> b.id === id))
+  	booksAPI.update(this.state.books.filter(b=> b.id === id)[0],shelf);
   }
   
   render() {
