@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+//import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import {Link} from 'react-router-dom'
@@ -19,7 +19,7 @@ class ListSearch extends React.Component  {
 
     if (this.state.query) { 
         const match = new RegExp(escapeRegExp(this.state.query),'i')
-        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors[0])))
+        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors.join())))
     } 
     else {
       showingBooks = this.props.books

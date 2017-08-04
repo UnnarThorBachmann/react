@@ -41,8 +41,7 @@ class BooksApp extends React.Component {
   		})
   	});
 
-  	console.log(shelf)
-  	console.log(this.state.books.filter(b=> b.id === id))
+  	
   	booksAPI.update(this.state.books.filter(b=> b.id === id)[0],shelf);
   }
   
