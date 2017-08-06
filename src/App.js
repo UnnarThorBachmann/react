@@ -158,8 +158,8 @@ class BooksApp extends React.Component {
 
     
   	
-     console.log(this.state.books);
-     this.forceUpdate();
+     
+     //this.forceUpdate();
   	}
   	/**
 	* @description Renders the search list or the shelves using ReactRouter.

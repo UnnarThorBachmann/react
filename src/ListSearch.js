@@ -15,7 +15,6 @@ class ListSearch extends React.Component  {
   
   state = {
     query: '',
-    orderBy:'title',
     filter:'',
     books: []
   }
@@ -25,6 +24,16 @@ class ListSearch extends React.Component  {
   * @param {string} query - The state variablee being updated.
   * @returns None
   **/
+  rateComparator = (a,b) => {
+          if (typeof a.averageRating === 'undefined'  && typeof b.averageRating === 'undefined')
+            return 0
+          else if (typeof a.averageRating === 'undefined')
+            return 1
+          else if (typeof b.averageRating === 'undefined')
+            return -1
+          else
+            return Number(b.averageRating)-Number(a.averageRating);
+  }
 
 	updateSearch = (query) => {
     this.setState({query: query});
@@ -43,31 +52,32 @@ class ListSearch extends React.Component  {
 
   }
 
-	render()	{
-
-    
+  updateOrder = (order) => {
     /**
     * Sorting the search list.
     **/
-    let books = this.state.books.map((book)=>(book));
-
-    if (this.state.orderBy === 'date')
-      books.sort(sortBy('-publishedDate'))
-    else if (this.state.orderBy === 'rating')
-      books.sort(function(a,b) {
-        if (typeof a.averageRating === 'undefined'  && typeof b.averageRating === 'undefined')
-          return 0
-        else if (typeof a.averageRating === 'undefined')
-          return 1
-        else if (typeof b.averageRating === 'undefined')
-          return -1
-        else
-          return Number(b.averageRating)-Number(a.averageRating);
-      })
+    if (order === 'date')
+      this.setState({books: this.state.books.sort(sortBy('-publishedDate'))})
+    else if (order === 'rating')
+      this.setState({books: this.state.books.sort(this.rateComparator)})
     else
-      books.sort(sortBy('title'))
-    
-    console.log(books);
+      this.setState({books: this.state.books.sort(sortBy('title'))})
+
+  };
+  updateShelf = (id,shelf)=> {
+    this.props.changeShelf(id,shelf);
+    this.setState({books: this.state.books.map(function(book) {
+        if (book.id === id) {
+          book.shelf = shelf;
+          return book;
+        }
+        else
+          return book;
+
+      })
+    })
+  }
+	render()	{
     return (
       
       <div className="search-books">
@@ -89,7 +99,7 @@ class ListSearch extends React.Component  {
           <div className="filter-sort">
             <div>        
               <span>Order by: </span>
-              <select onChange={(event)=> {this.setState({orderBy: event.target.value})}}>
+              <select onChange={(event)=> {this.updateOrder(event.target.value)}}>
                 <option value=""></option>
                 <option value="date">Date</option>
                 <option value="rating">Rating</option>
@@ -98,7 +108,7 @@ class ListSearch extends React.Component  {
             </div> 
           </div>
           <ol className="books-grid">
-            {books.map((book)=> (
+            {this.state.books.map((book)=> (
               <li key={book.id} className="search-list">
                 <div style={{width: '10%', height: '100%', backgroundImage: `url(${(book.imageLinks)?book.imageLinks.thumbnail:''})`}} className="search-list-thumb">
                 </div>
@@ -113,7 +123,7 @@ class ListSearch extends React.Component  {
                   <h6>Page count: {book.pageCount ? book.pageCount: 'unknown'}</h6>
                   <h6>Published date: {book.publishedDate ? book.publishedDate: 'unknown'}</h6>
                   <h6>Shelf status:</h6>
-                  <select onChange={(event)=> {this.props.changeShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
+                  <select onChange={(event)=> {this.updateShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
                     <option value="none" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
