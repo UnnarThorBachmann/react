@@ -34,10 +34,9 @@ Files modified
 ## How to run on a computer
 
 1. Make sure [NPM](https://www.npmjs.com/get-npm) is installed.
-2. Install `create-react-app` by typing `npm install -g create-react-app` in the console.
-3. Clone and download this repository and save in a directory.
-4. In the root directory write `npm install` and `npm start`
-5. Interact with the program in a browser using the url localhost:3000.
+2. Clone and download this repository and save in a directory.
+3. In the root directory write `npm install` and `npm start`
+4. Interact with the program in a browser using the url localhost:3000.
 
 Node packages installed:
 

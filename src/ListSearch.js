@@ -19,10 +19,11 @@ class ListSearch extends React.Component  {
     books: []
   }
   
-	/**
-  * @description A function to update the query string.
-  * @param {string} query - The state variablee being updated.
-  * @returns None
+  /**
+  * @description A helper function to sort by rating.
+  * @param {object} a - An object to compare with object b.
+  * @param {object} b - An object to compare with object a.
+  * @returns An integer which is a comparison of a and b.
   **/
   rateComparator = (a,b) => {
           if (typeof a.averageRating === 'undefined'  && typeof b.averageRating === 'undefined')
@@ -34,7 +35,11 @@ class ListSearch extends React.Component  {
           else
             return Number(b.averageRating)-Number(a.averageRating);
   }
-
+	/**
+  * @description A function to update the query string.
+  * @param {string} query - The state variablee being updated.
+  * @returns None
+  **/
 	updateSearch = (query) => {
     this.setState({query: query});
       const match = new RegExp(escapeRegExp(query.trim()),'i');
@@ -51,11 +56,12 @@ class ListSearch extends React.Component  {
         this.setState({books: []})
 
   }
-
+  /**
+  * @description A function to sort the searched books.
+  * @param {string} order - Selected order of the books.
+  * @returns None
+  **/
   updateOrder = (order) => {
-    /**
-    * Sorting the search list.
-    **/
     if (order === 'date')
       this.setState({books: this.state.books.sort(sortBy('-publishedDate'))})
     else if (order === 'rating')
@@ -64,7 +70,13 @@ class ListSearch extends React.Component  {
       this.setState({books: this.state.books.sort(sortBy('title'))})
 
   };
-  updateShelf = (id,shelf)=> {
+  /**
+  * @description A function to select a book on the shelf.
+  * @param {string} id - The id of the book selected.
+  * @param {string} shelf - The shelf selected.
+  * @returns None
+  **/
+  selectShelf = (id,shelf)=> {
     this.props.changeShelf(id,shelf);
     this.setState({books: this.state.books.map(function(book) {
         if (book.id === id) {
@@ -123,7 +135,7 @@ class ListSearch extends React.Component  {
                   <h6>Page count: {book.pageCount ? book.pageCount: 'unknown'}</h6>
                   <h6>Published date: {book.publishedDate ? book.publishedDate: 'unknown'}</h6>
                   <h6>Shelf status:</h6>
-                  <select onChange={(event)=> {this.updateShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
+                  <select onChange={(event)=> {this.selectShelf(event.target.id,event.target.value)}} value={book.shelf} id={book.id}>
                     <option value="none" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>

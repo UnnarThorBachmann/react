@@ -112,13 +112,12 @@ class BooksApp extends React.Component {
   
 	/**
 	* @description A prop to the child components for updating the books. 
+  *              Main function in the app. Controls the shelf life of each book.
 	* @param {string} id - Id of a book
 	* @param {shelf} shelf - Which shelf to put the book.
 	* @returns None
 	**/
 	changeShelf = (id,shelf) => {
-    console.log('id',id);
-    console.log('shelf',shelf);
     
     let onShelf = this.state.books.filter((book) => book.id === id);
     // In case new element is added.
@@ -132,7 +131,7 @@ class BooksApp extends React.Component {
       
     }
     else if (shelf != 'none') {
-      // In case of shuffled between shelves.
+      // In case of book is moved between shelves.
       this.setState(function(state) {
         this.state.books = this.state.books.map(function(book) {
           if (book.id === id) {
@@ -145,9 +144,7 @@ class BooksApp extends React.Component {
       
     }
     else {
-      /*this.setState(function(state) {
-        this.state.books = this.state.books.filter((book) => {book.id !== id});
-      });*/
+      // In case book is taken off a shelf.
       this.setState((state)=>{books: this.state.books.map(function(book){
         if (book.id === id)
           book.shelf = shelf;
@@ -156,17 +153,12 @@ class BooksApp extends React.Component {
       booksAPI.get(id).then((book)=>{booksAPI.update(book,shelf)});
     }
 
-    
-  	
-     
-     //this.forceUpdate();
-  	}
-  	/**
+  }
+  /**
 	* @description Renders the search list or the shelves using ReactRouter.
 	* @returns rendered UI for the search list
 	**/
 	render() {
-      console.log(this.state.books);
     	return (
       		<div className="app">
   				
