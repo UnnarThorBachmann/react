@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import {Link} from 'react-router-dom'
+import * as booksAPI from '../src/BooksAPI'
+
 /**
 * This component was constructed by Unnar Thor Bachmann.
 * Some of the code is under heavy influence from the video
@@ -10,46 +12,49 @@ import {Link} from 'react-router-dom'
 **/
 class ListSearch extends React.Component  {
 
+  
   state = {
     query: '',
     orderBy:'title',
-    filter:''
+    filter:'',
+    books: []
   }
-
+  
 	/**
   * @description A function to update the query string.
   * @param {string} query - The state variablee being updated.
   * @returns None
   **/
-	updateQuery = (query) => {
-    this.setState({query: query.trim()})
+
+	updateSearch = (query) => {
+    this.setState({query: query});
+      const match = new RegExp(escapeRegExp(query.trim()),'i');
+      let filtered_terms = this.props.terms.filter((term)=>(match.test(term)));
+      filtered_terms.sort(function(a,b) { return a.length - b.length;});
+      if (filtered_terms.length !== 0) {
+        booksAPI.search(filtered_terms[0]).then((data)=>{this.setState({books: data.map(function(book) {
+          let onShelf = this.props.books.filter(shelf_book=>book.id === shelf_book.id);
+          book.shelf = (onShelf.length !== 0) ? onShelf[0].shelf: 'none';
+          return book;
+        },this)})})
+      }
+      else
+        this.setState({books: []})
+
   }
 
 	render()	{
-    /**
-    * A pattern from the lecture videos.
-    **/
-    let showingBooks
 
-    if (this.state.query) { 
-        const match = new RegExp(escapeRegExp(this.state.query),'i');
-        showingBooks= this.props.books.filter((book)=>(match.test(book.title) || match.test(book.authors.join())));
-    } 
-    else {
-      showingBooks = this.props.books;
-    }
-    /**
-    * Pattern from videos ends.
-    **/
-
-
+    
     /**
     * Sorting the search list.
     **/
+    let books = this.state.books.map((book)=>(book));
+
     if (this.state.orderBy === 'date')
-      showingBooks.sort(sortBy('-publishedDate'))
+      books.sort(sortBy('-publishedDate'))
     else if (this.state.orderBy === 'rating')
-      showingBooks.sort(function(a,b) {
+      books.sort(function(a,b) {
         if (typeof a.averageRating === 'undefined'  && typeof b.averageRating === 'undefined')
           return 0
         else if (typeof a.averageRating === 'undefined')
@@ -59,36 +64,10 @@ class ListSearch extends React.Component  {
         else
           return Number(b.averageRating)-Number(a.averageRating);
       })
-    else if (this.state.orderBy === 'shelf') {
-      showingBooks.sort(function(a,b) {
-        if (a.shelf === 'read')
-          return 1;
-        else if (a.shelf === 'wantToRead')
-          return -1
-        else if (a.shelf === 'currentlyReading' && b.shelf === 'read')
-          return -1
-        else if (a.shelf === 'currentlyReading' && b.shelf === 'wantToRead')
-          return 1
-      })
-    }
     else
-      showingBooks.sort(sortBy('title'))
+      books.sort(sortBy('title'))
     
-
-    /**
-    * Filtering with selection.
-    **/
-    if (this.state.filter !=='' && ['Business', 'Computers','Economics','Fiction', 'Performing Arts'].includes(this.state.filter)) {
-      showingBooks = showingBooks.filter((book) => (
-        book.categories && (book.categories.join(' ').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1)
-      ))
-
-    }
-
-    if (this.state.filter !=='' && ['read','currentlyReading','wantToRead','none'].includes(this.state.filter)) {
-      showingBooks = showingBooks.filter((book) => (book.shelf === this.state.filter))
-    }
-    
+    console.log(books);
     return (
       
       <div className="search-books">
@@ -102,48 +81,30 @@ class ListSearch extends React.Component  {
             <input type="text" 
               placeholder='Search by title or author'
               value={this.state.query}
-              onChange={(event)=> this.updateQuery(event.target.value)}
+              onChange={(event)=> this.updateSearch(event.target.value)}
             />  
           </div>
         </div>
         <div className="search-books-results">
           <div className="filter-sort">
-            <div>
-              <span>Filter: </span>
-              <select onChange={(event)=> {this.setState({filter: event.target.value})}}>
-                <option value=""></option>
-                <option value="none" disabled>Filter by Category</option>                    
-                <option value="Business">Business</option>
-                <option value="Computers">Computers</option>
-                <option value="Economics">Economics</option>
-                <option value="Fiction">Fiction</option>
-                <option value="Performing Arts">Performing Arts</option>
-                <option value="none" disabled>Filter by Shelf</option>
-                <option value="currentlyReading">Currently Reading</option>
-                <option value="wantToRead">Want to Read</option>
-                <option value="read">Read</option>
-                <option value="none">None</option>
-              </select>
-            </div>
             <div>        
               <span>Order by: </span>
               <select onChange={(event)=> {this.setState({orderBy: event.target.value})}}>
                 <option value=""></option>
                 <option value="date">Date</option>
                 <option value="rating">Rating</option>
-                <option value="shelf">Shelf</option>
                 <option value="title">Title</option>
               </select>
             </div> 
           </div>
           <ol className="books-grid">
-            {showingBooks.map((book)=> (
+            {books.map((book)=> (
               <li key={book.id} className="search-list">
-                <div style={{width: '10%', height: '100%', backgroundImage: `url(${book.imageLinks.thumbnail})`}} className="search-list-thumb">
+                <div style={{width: '10%', height: '100%', backgroundImage: `url(${(book.imageLinks)?book.imageLinks.thumbnail:''})`}} className="search-list-thumb">
                 </div>
                 <div className="search-list-main">
                   <h4>{book.title}</h4>
-                  <p>{book.description.substring(0,700)}{book.description.length > 700? ' ...' : ''}</p>
+                  <p>{book.description? book.description.substring(0,700): ''} {book.description ? (book.description.length > 700? ' ...' : ''):''}</p>
                 </div>
                 <div style={{width: '15%'}} className="right-panel">
                   <h6>Author(s): {book.authors ? book.authors.join(', '): 'unknown'}</h6>
@@ -157,7 +118,6 @@ class ListSearch extends React.Component  {
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
                     <option value="read">Read</option>
-                    <option value="none">None</option>
                   </select>
                 </div>
               </li>

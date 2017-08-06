@@ -10,10 +10,93 @@ import {Link} from 'react-router-dom'
 * This file was motified by Unnar Thor Bachmann
 * This is the main component of the project.
 */
+   const terms = ['Android', 
+            'Art', 
+            'Artificial Intelligence', 
+            'Astronomy', 
+            'Austen', 
+            'Baseball', 
+            'Basketball', 
+            'Bhagat', 
+            'Biography', 
+            'Brief', 
+            'Business', 
+            'Camus', 
+            'Cervantes', 
+            'Christie', 
+            'Classics', 
+            'Comics', 
+            'Cook', 
+            'Cricket', 
+            'Cycling', 
+            'Desai', 
+            'Design', 
+            'Development', 
+            'Digital Marketing', 
+            'Drama', 
+            'Drawing', 
+            'Dumas', 
+            'Education', 
+            'Everything', 
+            'Fantasy', 
+            'Film', 
+            'Finance', 
+            'First', 
+            'Fitness', 
+            'Football', 
+            'Future', 
+            'Games', 
+            'Gandhi', 
+            'History', 
+            'History', 
+            'Homer', 
+            'Horror', 
+            'Hugo', 
+            'Ibsen', 
+            'Journey', 
+            'Kafka', 
+            'King', 
+            'Lahiri', 
+            'Larsson', 
+            'Learn', 
+            'Literary Fiction', 
+            'Make', 
+            'Manage', 
+            'Marquez', 
+            'Money', 
+            'Mystery', 
+            'Negotiate', 
+            'Painting', 
+            'Philosophy', 
+            'Photography', 
+            'Poetry', 
+            'Production', 
+            'Program Javascript', 
+            'Programming', 
+            'React', 
+            'Redux', 
+            'River', 
+            'Robotics', 
+            'Rowling', 
+            'Satire', 
+            'Science Fiction', 
+            'Shakespeare', 
+            'Singh', 
+            'Swimming', 
+            'Tale', 
+            'Thrun', 
+            'Time', 
+            'Tolstoy', 
+            'Travel', 
+            'Ultimate', 
+            'Virtual Reality', 
+            'Web Development', 
+            'iOS']
 
 class BooksApp extends React.Component {
 	state = {
-    	books: [], 
+    	books: []
+
   	}
 
 	/**
@@ -34,30 +117,61 @@ class BooksApp extends React.Component {
 	* @returns None
 	**/
 	changeShelf = (id,shelf) => {
-  		this.setState((state)=> {
-  			state.books.map(b => {
-  				if (b.id === id) {
-  					b.shelf = shelf;
-  					return b;
-  				}
-  				else 
-  					return b;
-  			})
-  		});
+    console.log('id',id);
+    console.log('shelf',shelf);
+    
+    let onShelf = this.state.books.filter((book) => book.id === id);
+    // In case new element is added.
+    if (onShelf.length === 0) {
+      let self = this;
+      booksAPI.get(id).then(function(book) {
+        book.shelf = shelf;
+        self.setState((state)=>{books: self.state.books.push(book)})
+        booksAPI.update(book,shelf);
+      }, self)
+      
+    }
+    else if (shelf != 'none') {
+      // In case of shuffled between shelves.
+      this.setState(function(state) {
+        this.state.books = this.state.books.map(function(book) {
+          if (book.id === id) {
+            book.shelf = shelf;
+            booksAPI.update(book,shelf);
+          }
+          return book;
+        });
+      });
+      
+    }
+    else {
+      /*this.setState(function(state) {
+        this.state.books = this.state.books.filter((book) => {book.id !== id});
+      });*/
+      this.setState((state)=>{books: this.state.books.map(function(book){
+        if (book.id === id)
+          book.shelf = shelf;
+        return book;
+      })})
+      booksAPI.get(id).then((book)=>{booksAPI.update(book,shelf)});
+    }
 
-  		booksAPI.update(this.state.books.filter(b=> b.id === id)[0],shelf);
+    
+  	
+     console.log(this.state.books);
+     this.forceUpdate();
   	}
   	/**
 	* @description Renders the search list or the shelves using ReactRouter.
 	* @returns rendered UI for the search list
 	**/
 	render() {
-
+      console.log(this.state.books);
     	return (
       		<div className="app">
   				
         		<Route exact path="/search" render ={() => (
-        				<ListSearch books={this.state.books} changeShelf={this.changeShelf}/>
+        				<ListSearch changeShelf={this.changeShelf} terms={terms} books={this.state.books}/>
         			)}
         		/>
         		
